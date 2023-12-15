@@ -9,7 +9,7 @@ const TimeTable = new mongoose.Schema({
     type: String,
     required: true,
   },
-  semester: {
+  season: {
     type: Number,
     required: true,
   }

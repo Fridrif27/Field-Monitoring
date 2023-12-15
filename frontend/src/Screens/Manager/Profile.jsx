@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { setUserData } from "../../redux/actions";
 import { baseApiURL } from "../../baseUrl";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../redux/actions";
 const Profile = () => {
   const [showPass, setShowPass] = useState(false);
   const router = useLocation();
@@ -28,13 +28,11 @@ const Profile = () => {
       )
       .then((response) => {
         if (response.data.success) {
-          setData(response.data.user[0]);
+          setData(response.data.user);
           dispatch(
             setUserData({
               fullname: `${response.data.user[0].firstName} ${response.data.user[0].middleName} ${response.data.user[0].lastName}`,
-              season: response.data.user[0].season,
-              enrollmentNo: response.data.user[0].enrollmentNo,
-              branch: response.data.user[0].branch,
+              employeeId: response.data.user[0].employeeId,
             })
           );
         } else {
@@ -44,7 +42,7 @@ const Profile = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, [dispatch, router.state.loginid, router.state.type]);
+  }, [router.state.loginid, router.state.type]);
 
   const checkPasswordHandler = (e) => {
     e.preventDefault();
@@ -53,7 +51,7 @@ const Profile = () => {
     };
     axios
       .post(
-        `${baseApiURL()}/employee/auth/login`,
+        `${baseApiURL()}/manager/auth/login`,
         { loginid: router.state.loginid, password: password.current },
         {
           headers: headers,
@@ -78,7 +76,7 @@ const Profile = () => {
     };
     axios
       .post(
-        `${baseApiURL()}/employee/auth/update/${id}`,
+        `${baseApiURL()}/manager/auth/update/${id}`,
         { loginid: router.state.loginid, password: password.new },
         {
           headers: headers,
@@ -104,17 +102,22 @@ const Profile = () => {
         <>
           <div>
             <p className="text-2xl font-semibold">
-              Hello {data.firstName} {data.middleName} {data.lastName}👋
+              Hello {data[0].firstName} {data[0].middleName} {data[0].lastName}{" "}
+              👋
             </p>
             <div className="mt-3">
               <p className="text-lg font-normal mb-2">
-                Employee Id: {data.employeeId}
+                Employee Id: {data[0].employeeId}
+              </p>
+              <p className="text-lg font-normal mb-2">Post: {data[0].post}</p>
+              <p className="text-lg font-normal mb-2">
+                Email Id: {data[0].email}
               </p>
               <p className="text-lg font-normal mb-2">
-                Phone Number: +91 {data.phoneNumber}
+                Phone Number: {data[0].phoneNumber}
               </p>
               <p className="text-lg font-normal mb-2">
-                Email Address: {data.email}
+                Department: {data[0].department}
               </p>
             </div>
             <button
@@ -159,8 +162,8 @@ const Profile = () => {
             )}
           </div>
           <img
-            src={data.profile}
-            alt="employee profile"
+            src={data[0].profile}
+            alt="manager profile"
             className="h-[200px] w-[200px] object-cover rounded-lg shadow-md"
           />
         </>

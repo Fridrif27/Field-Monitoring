@@ -6,25 +6,45 @@ import { storage } from "../../../firebase/config";
 import { baseApiURL } from "../../../baseUrl";
 import { FiUpload } from "react-icons/fi";
 
-const AddAdmin = () => {
+const AddEmployee = () => {
   const [file, setFile] = useState();
+  const [branch, setBranch] = useState();
   const [data, setData] = useState({
-    employeeId: "",
+    enrollmentNo: "",
     firstName: "",
     middleName: "",
     lastName: "",
     email: "",
     phoneNumber: "",
+    season: "",
+    branch: "",
     gender: "",
     profile: "",
   });
+  const getBranchData = () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    axios
+      .get(`${baseApiURL()}/branch/getBranch`, { headers })
+      .then((response) => {
+        if (response.data.success) {
+          setBranch(response.data.branches);
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   useEffect(() => {
     const uploadFileToStorage = async (file) => {
       toast.loading("Upload Photo To Storage");
       const storageRef = ref(
         storage,
-        `Admin Profile/${data.department}/${data.employeeId}`
+        `Employee Profile/${data.branch}/${data.season} Season/${data.enrollmentNo}`
       );
       const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
@@ -39,7 +59,7 @@ const AddAdmin = () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             toast.dismiss();
             setFile();
-            toast.success("Profile Uploaded To Admin");
+            toast.success("Profile Uploaded To Storage");
             setData({ ...data, profile: downloadURL });
           });
         }
@@ -48,14 +68,18 @@ const AddAdmin = () => {
     file && uploadFileToStorage(file);
   }, [data, file]);
 
-  const addAdminProfile = (e) => {
+  useEffect(() => {
+    getBranchData();
+  }, []);
+
+  const addEmployeeProfile = (e) => {
     e.preventDefault();
-    toast.loading("Adding Admin");
+    toast.loading("Adding Employee");
     const headers = {
       "Content-Type": "application/json",
     };
     axios
-      .post(`${baseApiURL()}/admin/details/addDetails`, data, {
+      .post(`${baseApiURL()}/employee/details/addDetails`, data, {
         headers: headers,
       })
       .then((response) => {
@@ -64,8 +88,8 @@ const AddAdmin = () => {
           toast.success(response.data.message);
           axios
             .post(
-              `${baseApiURL()}/Admin/auth/register`,
-              { loginid: data.employeeId, password: 112233 },
+              `${baseApiURL()}/employee/auth/register`,
+              { loginid: data.enrollmentNo, password: 112233 },
               {
                 headers: headers,
               }
@@ -76,12 +100,14 @@ const AddAdmin = () => {
                 toast.success(response.data.message);
                 setFile();
                 setData({
-                  employeeId: "",
+                  enrollmentNo: "",
                   firstName: "",
                   middleName: "",
                   lastName: "",
                   email: "",
                   phoneNumber: "",
+                  season: "",
+                  branch: "",
                   gender: "",
                   profile: "",
                 });
@@ -105,7 +131,7 @@ const AddAdmin = () => {
 
   return (
     <form
-      onSubmit={addAdminProfile}
+      onSubmit={addEmployeeProfile}
       className="w-[70%] flex justify-center items-center flex-wrap gap-6 mx-auto mt-10"
     >
       <div className="w-[40%]">
@@ -145,14 +171,14 @@ const AddAdmin = () => {
         />
       </div>
       <div className="w-[40%]">
-        <label htmlFor="employeeId" className="leading-7 text-sm ">
-          Enter Employee Id
+        <label htmlFor="enrollmentNo" className="leading-7 text-sm ">
+          Enter Enrollment No
         </label>
         <input
           type="number"
-          id="employeeId"
-          value={data.employeeId}
-          onChange={(e) => setData({ ...data, employeeId: e.target.value })}
+          id="enrollmentNo"
+          value={data.enrollmentNo}
+          onChange={(e) => setData({ ...data, enrollmentNo: e.target.value })}
           className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
         />
       </div>
@@ -181,6 +207,43 @@ const AddAdmin = () => {
         />
       </div>
       <div className="w-[40%]">
+        <label htmlFor="season" className="leading-7 text-sm ">
+          Select Season
+        </label>
+        <select
+          id="season"
+          className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
+          value={data.season}
+          onChange={(e) => setData({ ...data, season: e.target.value })}
+        >
+          <option defaultValue>-- Select --</option>
+          <option value="1">Spring season</option>
+          <option value="2">Summer season</option>
+          <option value="3">Autumn season</option>
+          <option value="4">Winter season</option>
+        </select>
+      </div>
+      <div className="w-[40%]">
+        <label htmlFor="branch" className="leading-7 text-sm ">
+          Select Branch
+        </label>
+        <select
+          id="branch"
+          className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
+          value={data.branch}
+          onChange={(e) => setData({ ...data, branch: e.target.value })}
+        >
+          <option defaultValue>-- Select --</option>
+          {branch?.map((branch) => {
+            return (
+              <option value={branch.name} key={branch.name}>
+                {branch.name}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+      <div className="w-[40%]">
         <label htmlFor="gender" className="leading-7 text-sm ">
           Select Gender
         </label>
@@ -190,7 +253,6 @@ const AddAdmin = () => {
           value={data.gender}
           onChange={(e) => setData({ ...data, gender: e.target.value })}
         >
-          {" "}
           <option defaultValue>-- Select --</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
@@ -224,12 +286,12 @@ const AddAdmin = () => {
       )}
       <button
         type="submit"
-        className="bg-blue-500 px-6 py-3 rounded-sm my-6 text-white"
+        className="bg-blue-500 px-6 py-3 rounded-sm mb-6 text-white"
       >
-        Add New Admin
+        Add New Employee
       </button>
     </form>
   );
 };
 
-export default AddAdmin;
+export default AddEmployee;

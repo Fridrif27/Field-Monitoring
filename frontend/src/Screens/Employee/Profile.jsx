@@ -21,7 +21,7 @@ const Profile = () => {
     axios
       .post(
         `${baseApiURL()}/${router.state.type}/details/getDetails`,
-        { employeeId: router.state.loginid },
+        { enrollmentNo: router.state.loginid },
         {
           headers: headers,
         }
@@ -108,7 +108,11 @@ const Profile = () => {
             </p>
             <div className="mt-3">
               <p className="text-lg font-normal mb-2">
-                Employee Id: {data.employeeId}
+                Enrollment No: {data.enrollmentNo}
+              </p>
+              <p className="text-lg font-normal mb-2">Branch: {data.branch}</p>
+              <p className="text-lg font-normal mb-2">
+                Season: {data.season}
               </p>
               <p className="text-lg font-normal mb-2">
                 Phone Number: +91 {data.phoneNumber}
@@ -158,6 +162,7 @@ const Profile = () => {
               </form>
             )}
           </div>
+
           <img
             src={data.profile}
             alt="employee profile"

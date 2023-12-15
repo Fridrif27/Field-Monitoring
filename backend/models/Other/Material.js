@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const Material = new mongoose.Schema({
-  faculty: {
+  manager: {
     type: String,
     required: true,
   },
-  subject: {
+  sector: {
     type: String,
     required: true,
   },

@@ -3,8 +3,8 @@ import Login from "./components/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import mystore from "./redux/store";
-import StudentHome from "./Screens/Student/Home";
-import FacultyHome from "./Screens/Faculty/Home";
+import EmployeeHome from "./Screens/Employee/Home";
+import ManagerHome from "./Screens/Manager/Home";
 import AdminHome from "./Screens/Admin/Home";
 
 const App = () => {
@@ -14,8 +14,8 @@ const App = () => {
         <Router>
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="student" element={<StudentHome />} />
-            <Route path="faculty" element={<FacultyHome />} />
+            <Route path="employee" element={<EmployeeHome />} />
+            <Route path="manager" element={<ManagerHome />} />
             <Route path="admin" element={<AdminHome />} />
           </Routes>
         </Router>

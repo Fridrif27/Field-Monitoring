@@ -17,9 +17,9 @@ router.post("/getTimetable", async (req, res) => {
 });
 
 router.post("/addTimetable", async (req, res) => {
-  let { link, semester, branch } = req.body;
+  let { link, season, branch } = req.body;
   try {
-    let timetable = await Timetable.findOne({ semester, branch });
+    let timetable = await Timetable.findOne({ season, branch });
     if (timetable) {
       await Timetable.findByIdAndUpdate(timetable._id, req.body);
       const data = {

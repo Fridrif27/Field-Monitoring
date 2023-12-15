@@ -18,12 +18,12 @@ router.post("/getMaterial", async (req, res) => {
 });
 
 router.post("/addMaterial", async (req, res) => {
-  let { faculty, link, subject, title } = req.body;
+  let { manager, link, sector, title } = req.body;
   try {
     await Material.create({
-      faculty,
+      manager,
       link,
-      subject,
+      sector,
       title,
     });
     const data = {
@@ -38,12 +38,12 @@ router.post("/addMaterial", async (req, res) => {
 });
 
 router.post("/updateMaterial/:id", async (req, res) => {
-  let { faculty, link, subject, title } = req.body;
+  let { manager, link, sector, title } = req.body;
   try {
     let material = await Material.findByIdAndUpdate(req.params.id, {
-      faculty,
+      manager,
       link,
-      subject,
+      sector,
       title,
     });
     if (!material) {

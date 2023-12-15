@@ -19,19 +19,19 @@ const Notice = () => {
   const [data, setData] = useState({
     title: "",
     description: "",
-    type: "student",
+    type: "employee",
     link: "",
   });
 
   const getNoticeHandler = () => {
     let data = {};
-    if (router.pathname.replace("/", "") === "student") {
+    if (router.pathname.replace("/", "") === "employee") {
       data = {
-        type: ["student", "both"],
+        type: ["employee", "both"],
       };
     } else {
       data = {
-        type: ["student", "both", "faculty"],
+        type: ["employee", "both", "manager"],
       };
     }
     const headers = {
@@ -56,13 +56,13 @@ const Notice = () => {
 
   useEffect(() => {
     let data = {};
-    if (router.pathname.replace("/", "") === "student") {
+    if (router.pathname.replace("/", "") === "employee") {
       data = {
-        type: ["student", "both"],
+        type: ["employee", "both"],
       };
     } else {
       data = {
-        type: ["student", "both", "faculty"],
+        type: ["employee", "both", "manager"],
       };
     }
     const headers = {
@@ -175,14 +175,14 @@ const Notice = () => {
   const openHandler = () => {
     setOpen(!open);
     setEdit(false);
-    setData({ title: "", description: "", type: "student", link: "" });
+    setData({ title: "", description: "", type: "employee", link: "" });
   };
 
   return (
     <div className="w-[85%] mx-auto flex justify-center items-start flex-col my-10">
       <div className="relative flex justify-between items-center w-full">
         <Heading title="Notices" />
-        {(router.pathname === "/faculty" || router.pathname === "/admin") &&
+        {(router.pathname === "/manager" || router.pathname === "/admin") &&
           (open ? (
             <button
               className="absolute right-2 flex justify-center items-center border-2 border-red-500 px-3 py-2 rounded text-red-500"
@@ -214,7 +214,7 @@ const Notice = () => {
                   key={item._id}
                   className="border-blue-500 border-2 w-full rounded-md shadow-sm py-4 px-6 mb-4 relative"
                 >
-                  {(router.pathname === "/faculty" ||
+                  {(router.pathname === "/manager" ||
                     router.pathname === "/admin") && (
                     <div className="absolute flex justify-center items-center right-4 bottom-3">
                       <span className="text-sm bg-blue-500 px-4 py-1 text-white rounded-full">
@@ -310,8 +310,8 @@ const Notice = () => {
               value={data.type}
               onChange={(e) => setData({ ...data, type: e.target.value })}
             >
-              <option value="student">Student</option>
-              <option value="faculty">Faculty</option>
+              <option value="employee">Employee</option>
+              <option value="manager">Manager</option>
               <option value="both">Both</option>
             </select>
           </div>

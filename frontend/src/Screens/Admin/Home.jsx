@@ -5,9 +5,9 @@ import Navbar from "../../components/Navbar";
 import { toast, Toaster } from "react-hot-toast";
 import axios from "axios";
 import Notice from "../../components/Notice";
-import Student from "./Student";
-import Faculty from "./Faculty";
-import Subjects from "./Subject";
+import Employee from "./Employee";
+import Manager from "./Manager";
+import Sectors from "./Sector";
 import { baseApiURL } from "../../baseUrl";
 import Admin from "./Admin";
 import Profile from "./Profile";
@@ -19,8 +19,8 @@ const Home = () => {
   const [load, setLoad] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("Profile");
   const [dashboardData, setDashboardData] = useState({
-    studentCount: "",
-    facultyCount: "",
+    employeeCount: "",
+    managerCount: "",
   });
   useEffect(() => {
     if (router.state === null) {
@@ -30,23 +30,23 @@ const Home = () => {
   }, [navigate, router.state]);
 
   useEffect(() => {
-    getStudentCount();
-    getFacultyCount();
+    getEmployeeCount();
+    getManagerCount();
   }, []);
 
-  const getStudentCount = () => {
+  const getEmployeeCount = () => {
     const headers = {
       "Content-Type": "application/json",
     };
     axios
-      .get(`${baseApiURL()}/student/details/count`, {
+      .get(`${baseApiURL()}/employee/details/count`, {
         headers: headers,
       })
       .then((response) => {
         if (response.data.success) {
           setDashboardData({
             ...dashboardData,
-            studentCount: response.data.user,
+            employeeCount: response.data.user,
           });
         } else {
           toast.error(response.data.message);
@@ -57,19 +57,19 @@ const Home = () => {
       });
   };
 
-  const getFacultyCount = () => {
+  const getManagerCount = () => {
     const headers = {
       "Content-Type": "application/json",
     };
     axios
-      .get(`${baseApiURL()}/faculty/details/count`, {
+      .get(`${baseApiURL()}/manager/details/count`, {
         headers: headers,
       })
       .then((response) => {
         if (response.data.success) {
           setDashboardData({
             ...dashboardData,
-            facultyCount: response.data.user,
+            managerCount: response.data.user,
           });
         } else {
           toast.error(response.data.message);
@@ -99,23 +99,23 @@ const Home = () => {
               </li>
               <li
                 className={`text-center rounded-sm px-4 py-2 w-1/5 cursor-pointer ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
-                  selectedMenu === "Student"
+                  selectedMenu === "Employee"
                     ? "border-b-2 pb-2 border-blue-500 bg-blue-100 rounded-sm"
                     : "bg-blue-500 text-white hover:bg-blue-600 border-b-2 border-blue-500"
                 }`}
-                onClick={() => setSelectedMenu("Student")}
+                onClick={() => setSelectedMenu("Employee")}
               >
-                Student
+                Employee
               </li>
               <li
                 className={`text-center rounded-sm px-4 py-2 w-1/5 cursor-pointer ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
-                  selectedMenu === "Faculty"
+                  selectedMenu === "Manager"
                     ? "border-b-2 pb-2 border-blue-500 bg-blue-100 rounded-sm"
                     : "bg-blue-500 text-white hover:bg-blue-600 border-b-2 border-blue-500"
                 }`}
-                onClick={() => setSelectedMenu("Faculty")}
+                onClick={() => setSelectedMenu("Manager")}
               >
-                Faculty
+                Manager
               </li>
               <li
                 className={`text-center rounded-sm px-4 py-2 w-1/5 cursor-pointer ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
@@ -139,13 +139,13 @@ const Home = () => {
               </li>
               <li
                 className={`text-center rounded-sm px-4 py-2 w-1/5 cursor-pointer ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
-                  selectedMenu === "Subjects"
+                  selectedMenu === "Sectors"
                     ? "border-b-2 pb-2 border-blue-500 bg-blue-100 rounded-sm"
                     : "bg-blue-500 text-white hover:bg-blue-600 border-b-2 border-blue-500"
                 }`}
-                onClick={() => setSelectedMenu("Subjects")}
+                onClick={() => setSelectedMenu("Sectors")}
               >
-                Subjects
+                Sectors
               </li>
               <li
                 className={`text-center rounded-sm px-4 py-2 w-1/5 cursor-pointer ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
@@ -162,9 +162,9 @@ const Home = () => {
           <>
             {selectedMenu === "Branch" && <Branch />}
             {selectedMenu === "Notice" && <Notice />}
-            {selectedMenu === "Student" && <Student />}
-            {selectedMenu === "Faculty" && <Faculty />}
-            {selectedMenu === "Subjects" && <Subjects />}
+            {selectedMenu === "Employee" && <Employee />}
+            {selectedMenu === "Manager" && <Manager />}
+            {selectedMenu === "Sectors" && <Sectors />}
             {selectedMenu === "Admin" && <Admin />}
             {selectedMenu === "Profile" && <Profile />}
           </>

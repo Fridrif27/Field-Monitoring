@@ -6,7 +6,7 @@ import { storage } from "../../../firebase/config";
 import { baseApiURL } from "../../../baseUrl";
 import { FiSearch, FiUpload, FiX } from "react-icons/fi";
 
-const EditAdmin = () => {
+const EditManager = () => {
   const [file, setFile] = useState();
   const [searchActive, setSearchActive] = useState(false);
   const [data, setData] = useState({
@@ -16,17 +16,21 @@ const EditAdmin = () => {
     lastName: "",
     email: "",
     phoneNumber: "",
+    department: "",
     gender: "",
+    experience: "",
+    post: "",
     profile: "",
   });
   const [id, setId] = useState();
   const [search, setSearch] = useState();
+
   useEffect(() => {
     const uploadFileToStorage = async (file) => {
       toast.loading("Upload Photo To Storage");
       const storageRef = ref(
         storage,
-        `Admin Profile/${data.department}/${data.employeeId}`
+        `Manager Profile/${data.department}/${data.employeeId}`
       );
       const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
@@ -41,7 +45,7 @@ const EditAdmin = () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             toast.dismiss();
             setFile();
-            toast.success("Profile Uploaded To Admin");
+            toast.success("Profile Uploaded To Manager");
             setData({ ...data, profile: downloadURL });
           });
         }
@@ -50,14 +54,14 @@ const EditAdmin = () => {
     file && uploadFileToStorage(file);
   }, [data, file]);
 
-  const updateAdminProfile = (e) => {
+  const updateManagerProfile = (e) => {
     e.preventDefault();
-    toast.loading("Updating Admin");
+    toast.loading("Updating Manager");
     const headers = {
       "Content-Type": "application/json",
     };
     axios
-      .post(`${baseApiURL()}/admin/details/updateDetails/${id}`, data, {
+      .post(`${baseApiURL()}/manager/details/updateDetails/${id}`, data, {
         headers: headers,
       })
       .then((response) => {
@@ -74,8 +78,11 @@ const EditAdmin = () => {
             lastName: "",
             email: "",
             phoneNumber: "",
-            profile: "",
+            department: "",
             gender: "",
+            experience: "",
+            post: "",
+            profile: "",
           });
         } else {
           toast.error(response.data.message);
@@ -87,39 +94,37 @@ const EditAdmin = () => {
       });
   };
 
-  const searchAdminHandler = (e) => {
+  const searchManagerHandler = (e) => {
     setSearchActive(true);
     e.preventDefault();
-    toast.loading("Getting Admin");
+    toast.loading("Getting Manager");
     const headers = {
       "Content-Type": "application/json",
     };
     axios
       .post(
-        `${baseApiURL()}/admin/details/getDetails`,
+        `${baseApiURL()}/manager/details/getDetails`,
         { employeeId: search },
         { headers }
       )
       .then((response) => {
         toast.dismiss();
-        if (response.data.success) {
-          if (response.data.user.length !== 0) {
-            toast.success(response.data.message);
-            setId(response.data.user[0]._id);
-            setData({
-              employeeId: response.data.user[0].employeeId,
-              firstName: response.data.user[0].firstName,
-              middleName: response.data.user[0].middleName,
-              lastName: response.data.user[0].lastName,
-              email: response.data.user[0].email,
-              phoneNumber: response.data.user[0].phoneNumber,
-              gender: response.data.user[0].gender,
-              profile: response.data.user[0].profile,
-            });
-          } else {
-            toast.dismiss();
-            toast.error("No Admin Found With ID");
-          }
+        if (response?.data?.success) {
+          toast.success(response?.data?.message);
+          setId(response.data.user[0]._id);
+          setData({
+            employeeId: response.data.user[0].employeeId,
+            firstName: response.data.user[0].firstName,
+            middleName: response.data.user[0].middleName,
+            lastName: response.data.user[0].lastName,
+            email: response.data.user[0].email,
+            phoneNumber: response.data.user[0].phoneNumber,
+            post: response.data.user[0].post,
+            department: response.data.user[0].department,
+            gender: response.data.user[0].gender,
+            profile: response.data.user[0].profile,
+            experience: response.data.user[0].experience,
+          });
         } else {
           toast.error(response.data.message);
         }
@@ -129,6 +134,7 @@ const EditAdmin = () => {
         console.error(error);
       });
   };
+
   const clearSearchHandler = () => {
     setSearchActive(false);
     setSearch("");
@@ -140,16 +146,18 @@ const EditAdmin = () => {
       lastName: "",
       email: "",
       phoneNumber: "",
+      department: "",
       gender: "",
+      experience: "",
+      post: "",
       profile: "",
     });
   };
-
   return (
     <div className="my-6 mx-auto w-full">
       <form
-        onSubmit={searchAdminHandler}
         className="flex justify-center items-center border-2 border-blue-500 rounded w-[40%] mx-auto"
+        onSubmit={searchManagerHandler}
       >
         <input
           type="text"
@@ -174,7 +182,7 @@ const EditAdmin = () => {
       </form>
       {search && id && (
         <form
-          onSubmit={updateAdminProfile}
+          onSubmit={updateManagerProfile}
           className="w-[70%] flex justify-center items-center flex-wrap gap-6 mx-auto mt-10"
         >
           <div className="w-[40%]">
@@ -218,22 +226,11 @@ const EditAdmin = () => {
               Enter Employee Id
             </label>
             <input
+              disabled
               type="number"
               id="employeeId"
               value={data.employeeId}
               onChange={(e) => setData({ ...data, employeeId: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="email" className="leading-7 text-sm ">
-              Enter Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={data.email}
-              onChange={(e) => setData({ ...data, email: e.target.value })}
               className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
             />
           </div>
@@ -251,24 +248,45 @@ const EditAdmin = () => {
               className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
             />
           </div>
-
           <div className="w-[40%]">
-            <label htmlFor="gender" className="leading-7 text-sm ">
-              Select Gender
+            <label htmlFor="email" className="leading-7 text-sm ">
+              Enter Email Address
             </label>
-            <select
-              id="gender"
-              className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
-              value={data.gender}
-              onChange={(e) => setData({ ...data, gender: e.target.value })}
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
+            <input
+              type="email"
+              id="email"
+              value={data.email}
+              onChange={(e) => setData({ ...data, email: e.target.value })}
+              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            />
+          </div>
+          <div className="w-[40%]">
+            <label htmlFor="post" className="leading-7 text-sm ">
+              POST
+            </label>
+            <input
+              type="text"
+              id="post"
+              value={data.post}
+              onChange={(e) => setData({ ...data, post: e.target.value })}
+              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            />
+          </div>
+          <div className="w-[40%]">
+            <label htmlFor="experience" className="leading-7 text-sm ">
+              Experience
+            </label>
+            <input
+              type="number"
+              id="experience"
+              value={data.experience}
+              onChange={(e) => setData({ ...data, experience: e.target.value })}
+              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            />
           </div>
           <div className="w-[40%]">
             <label htmlFor="file" className="leading-7 text-sm ">
-              Select Profile
+              Select New Profile
             </label>
             <label
               htmlFor="file"
@@ -296,7 +314,7 @@ const EditAdmin = () => {
             type="submit"
             className="bg-blue-500 px-6 py-3 rounded-sm mb-6 text-white"
           >
-            Update Admin
+            Update Manager
           </button>
         </form>
       )}
@@ -304,4 +322,4 @@ const EditAdmin = () => {
   );
 };
 
-export default EditAdmin;
+export default EditManager;

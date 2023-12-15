@@ -7,7 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { baseApiURL } from "../baseUrl";
 const Login = () => {
   const navigate = useNavigate();
-  const [selected, setSelected] = useState("Student");
+  const [selected, setSelected] = useState("Employee");
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => {
     if (data.login !== "" && data.password !== "") {
@@ -35,7 +35,7 @@ const Login = () => {
     <div className="bg-white h-[100vh] w-full flex justify-between items-center">
       <img
         className="w-[60%] h-[100vh] object-cover"
-        src="https://images.unsplash.com/photo-1527891751199-7225231a68dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+        src="https://plus.unsplash.com/premium_photo-1664476842335-abe84418c76d?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         alt=""
       />
       <div className="w-[40%] flex justify-center items-start flex-col pl-8">
@@ -85,19 +85,19 @@ const Login = () => {
       <div className="absolute top-4 right-4">
         <button
           className={`text-blue-500 mr-6 text-base font-semibold hover:text-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
-            selected === "Student" && "border-b-2 border-green-500"
+            selected === "Employee" && "border-b-2 border-green-500"
           }`}
-          onClick={() => setSelected("Student")}
+          onClick={() => setSelected("Employee")}
         >
-          Student
+          Employee
         </button>
         <button
           className={`text-blue-500 mr-6 text-base font-semibold hover:text-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
-            selected === "Faculty" && "border-b-2 border-green-500"
+            selected === "Manager" && "border-b-2 border-green-500"
           }`}
-          onClick={() => setSelected("Faculty")}
+          onClick={() => setSelected("Manager")}
         >
-          Faculty
+          Manager
         </button>
         <button
           className={`text-blue-500 mr-6 text-base font-semibold hover:text-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${

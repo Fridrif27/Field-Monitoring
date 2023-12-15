@@ -44,8 +44,8 @@ router.post("/addBranch", async (req, res) => {
 
 router.delete("/deleteBranch/:id", async (req, res) => {
   try {
-    let mark = await Branch.findByIdAndDelete(req.params.id);
-    if (!mark) {
+    let evaluation = await Branch.findByIdAndDelete(req.params.id);
+    if (!evaluation) {
       return res
         .status(400)
         .json({ success: false, message: "No Branch Data Exists!" });
